@@ -10,7 +10,7 @@ const MapaGoogle = ({ center, zoom, markers = [] }) => {
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        const SRC = `https://maps.googleapis.com/maps/api/js?key=${process.env.PUBLIC_GOOGLE_MAPS_API_KEY}&callback=console.debug&libraries=maps,marker&v=beta`;
+        
         if (typeof window === 'undefined') return;
 
         // Función para cargar el script de Google Maps
@@ -22,8 +22,7 @@ const MapaGoogle = ({ center, zoom, markers = [] }) => {
             }
             
             const script = document.createElement("script");
-            //script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.PUBLIC_GOOGLE_MAPS_API_KEY}`;
-            script.src = SRC;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;            
             script.async = true;
             script.defer = true;
             script.onload = () => {

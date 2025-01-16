@@ -1,6 +1,7 @@
+'use client';
 import React from 'react';
 //import { useRouter } from 'next/router';
-import { redirect } from 'next/navigation';
+import { useEffect } from 'react';
 import { LogIn, Search, ArrowRight, Facebook, Twitter, Instagram } from 'lucide-react';
 import NavbarColegioCercano from './Componentes/navbar';
 import FooterColegioCercano from './Componentes/footer';
