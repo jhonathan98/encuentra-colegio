@@ -19,7 +19,7 @@ const MapaGoogle = ({ center, zoom, markers = [] }) => {
                 setIsLoaded(true);
                 return;
             }
-            const SRC = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBWy1Nidyo_5jMCKpeOmAiQ1NclivbtUuc&callback=console.debug&libraries=maps,marker&v=beta`;
+            const SRC = `https://maps.googleapis.com/maps/api/js?key=${process.env.PUBLIC_GOOGLE_MAPS_API_KEY}&callback=console.debug&libraries=maps,marker&v=beta`;
             const script = document.createElement("script");
             //script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.PUBLIC_GOOGLE_MAPS_API_KEY}`;
             script.src = SRC;
