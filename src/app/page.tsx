@@ -1,19 +1,10 @@
-'use client';
 import React from 'react';
-//import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { LogIn, Search, ArrowRight, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Search } from 'lucide-react';
 import NavbarColegioCercano from './Componentes/navbar';
 import FooterColegioCercano from './Componentes/footer';
+import ButtonRedirectMain from './Componentes/ButtonRedirectMain';
 
 const Page = () => {
-
-  //const router = useRouter();
-
-  const IrColegio = () => {
-    //router.push('/colegio');
-    console.log('Ir a la página de colegio');
-  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-yellow-50">
@@ -25,6 +16,7 @@ const Page = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-blue-500/20" />
         <div className="absolute inset-0 bg-[url('/fondoColombia.png')] bg-cover bg-center opacity-10" />
         <div className="relative text-center px-4">
+          <ButtonRedirectMain />
           <h1 className="text-5x1 md:text-7xl py-1 font-bold mb-8 bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
             Descubre tu
             <br />

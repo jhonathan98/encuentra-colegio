@@ -1,128 +1,44 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { GoogleMap, LoadScript, MarkerF,useLoadScript } from '@react-google-maps/api';
+import { useMemo } from 'react';
+import React from 'react';
 
-const MapaGoogle = ({ center, zoom, markers = [] }) => {
+const MapaGoogle = ({ center_param, zoom, markers = [] }) => {
 
-    const googleMapRef = useRef(null);
-    const mapInstaceRef = useRef(null);
-    const markersRef = useRef([]);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const { isLoaded } = useLoadScript({
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+        version: "weekly" // Asegura que usamos la última versión
+    });
+    const center = useMemo(() => (center_param), []);
 
-    useEffect(() => {
-        
-        if (typeof window === 'undefined') return;
-
-        // Función para cargar el script de Google Maps
-        const loadGoogleMapsScript = () => {
-
-            if(window.google){
-                setIsLoaded(true);
-                return;
-            }
-            
-            const script = document.createElement("script");
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;            
-            script.async = true;
-            script.defer = true;
-            script.onload = () => {
-                setIsLoaded(true);
-            }
-            document.body.appendChild(script);            
-            //script.onload = initializeGoogleMap;
-            
-        };
-        loadGoogleMapsScript();
-    },[]);
-
-    useEffect(() => {
-
-        if (!isLoaded) return;
-        
-        // Función para inicializar el mapa
-        if (!mapInstaceRef.current && googleMapRef.current) {
-            mapInstaceRef.current = new window.google.maps.Map(googleMapRef.current, {
-                center,
-                zoom,
-            });            
-        }
-
-        const addMarkers = () => {
-            // Limpiar marcadores anteriores
-            markersRef.current.forEach(marker => marker.setMap(null));
-            markersRef.current = [];
-        
-            // Añadir nuevos marcadores
-            markers.forEach(markerData => {
-                const marker = new window.google.maps.Marker({
-                    position: markerData.position,
-                    map: mapInstaceRef.current,
-                    title: markerData.title,
-                    // Opcional: personalizar el ícono
-                    icon: markerData.icon,
-                    // Opcional: animación
-                    animation: markerData.animation ? window.google.maps.Animation.DROP : null
-                });
-        
-                // Opcional: añadir ventana de información
-                if (markerData.info) {
-                    const infoWindow = new window.google.maps.InfoWindow({
-                        content: markerData.info
-                    });
-            
-                    marker.addListener('click', () => {
-                        infoWindow.open(mapInstaceRef.current, marker);
-                    });
-                }
-        
-                markersRef.current.push(marker);
-            });
-        };
-
-        addMarkers();
-        
-        // // Si la API de Google Maps ya está cargada
-        // if(!window.google) {
-        //     loadGoogleMapsScript();
-        // } else {
-        //     initializeGoogleMap();
-        // }
-
-        // Limpieza
-        return () => {
-            if (mapInstaceRef.current) {
-                // Limpiar recursos si es necesario                
-                markersRef.current.forEach(marker => marker.setMap(null));
-            }
-        };
-
-    }, [isLoaded,center, zoom,markers]);
+    const containerStyle = {
+        width: '100%',
+        height: '400px'
+    };
+    const options = {
+        disableDefaultUI: false,
+        zoomControl: true,
+    };
+    
+    if (!isLoaded) return <div>Cargando mapa...</div>;
 
     
-    return (
-        <div 
-            ref={googleMapRef} 
-            style={{ width: '95%', height: '450px' }}
-            className="relative"
-        >
-        {!isLoaded && (
-            <div 
-            style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#f0f0f0'
-            }}
+    return (        
+        // <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} version='weekly'>
+            <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={center}
+                zoom={zoom}
+                options={options}
             >
-                Cargando mapa...
-            </div>
-        )}
-        </div>
+                {
+                    markers.map((marker, index) => (
+                        <MarkerF key={index} position={marker.position} />
+                    ))
+                }
+            </GoogleMap>
+        // </LoadScript>
     )
 }
 
