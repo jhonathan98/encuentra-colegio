@@ -12,7 +12,7 @@ export async function middleware(req: NextRequest) {
 
   // Si no hay sesión y la ruta está protegida, redirige al login
   if (!session && req.nextUrl.pathname.startsWith('/')) {
-    return NextResponse.redirect(new URL('/pages/login', req.url))
+    return NextResponse.redirect(new URL('/pagespublic/login', req.url))
   }
 
   return res
