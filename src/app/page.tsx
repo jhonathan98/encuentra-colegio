@@ -1,10 +1,17 @@
+'use client';
 import React from 'react';
 import { Search } from 'lucide-react';
-import NavbarColegioCercano from './Componentes/navbar';
-import FooterColegioCercano from './Componentes/footer';
-import ButtonRedirectMain from './Componentes/ButtonRedirectMain';
+import NavbarColegioCercano from './componentes/navbar';
+import FooterColegioCercano from './componentes/footer';
+import { useRouter } from 'next/navigation';
+
 
 const Page = () => {
+  const route = useRouter();
+
+  const handleRedirectMapa = () => {
+    route.push('pages/mapa');
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-yellow-50">
@@ -16,7 +23,7 @@ const Page = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-blue-500/20" />
         <div className="absolute inset-0 bg-[url('/fondoColombia.png')] bg-cover bg-center opacity-10" />
         <div className="relative text-center px-4">
-          <ButtonRedirectMain />
+                   
           <h1 className="text-5x1 md:text-7xl py-1 font-bold mb-8 bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text text-transparent">
             Descubre tu
             <br />
@@ -25,10 +32,10 @@ const Page = () => {
           <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl mx-auto">
             Encuentra el mejor colegio para tus hijos en Colombia con nuestra plataforma inteligente
           </p>
-          <a href='/mapa' className="group px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white rounded-full text-xl font-semibold hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-3 mx-80" >
+          <button onClick={handleRedirectMapa} className="group px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white rounded-full text-xl font-semibold hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-3 mx-80" >
             Buscar Colegio
             <Search className="group-hover:rotate-12 transition-transform duration-300" />
-          </a>
+          </button>
         </div>
       </section>
 

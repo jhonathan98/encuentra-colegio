@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
-import NavbarColegioCercano from '../Componentes/navbar';
-import FooterColegioCercano from '../Componentes/footer';
+import NavbarColegioCercano from '../../componentes/navbar';
+import FooterColegioCercano from '../../componentes/footer';
 import { SchoolIcon } from 'lucide-react';
 import {
   APIProvider,
@@ -13,7 +13,7 @@ import {
   AdvancedMarker,
   InfoWindow,
 } from '@vis.gl/react-google-maps';
-import Colegios from '@/constantes/colegios';
+import Colegios from '@/app/constantes/colegios';
 
 
 function Direccions() {
