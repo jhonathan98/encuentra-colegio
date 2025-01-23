@@ -1,7 +1,13 @@
 'use client';
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/utils/supabase'
+import { useEffect,useState } from 'react'
+
 const NavbarColegioCercano = () => {
+
     const router = useRouter();
+    const [userLoged, setuserLoged] = useState(false);
+
     const handleRedirectHome = () => {
         router.push('/');
     }
@@ -11,6 +17,26 @@ const NavbarColegioCercano = () => {
     const handleRedirectRegister = () => {
         router.push('/pagespublic/register');
     }
+
+    useEffect(() => {
+
+        async function sessionNow() {
+            const { data, error } = await supabase.auth.getSession()
+            if (error) {
+                console.error(error)
+                setuserLoged(false)
+                router.push('/pagespublic/login')
+            }
+            if(data){
+                setuserLoged(true)
+                console.log(data)
+            }
+        }
+        sessionNow();
+
+    }, [])
+
+
     return (
         <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/70 border-b border-gray-200">
             <div className="max-w-7xl mx-auto px-6 py-4">
@@ -23,14 +49,24 @@ const NavbarColegioCercano = () => {
                         EduColombia 
                     </span>
                 </button>
-                <div className="flex gap-4 items-center">
-                <button onClick={handleRedirectLogin} className="px-4 py-2 text-blue-600 hover:text-blue-800 transition-colors duration-300">
-                    Iniciar Sesión
-                </button>
-                <button onClick={handleRedirectRegister} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
-                    Registrarse
-                </button>
-                </div>
+                {
+                userLoged ? (
+                    <div className="flex gap-4 items-center">
+                        <button onClick={handleRedirectLogin} className="px-4 py-2 text-blue-600 hover:text-blue-800 transition-colors duration-300">
+                            Cerrar sesion
+                        </button>                        
+                    </div>
+                ):(
+                    <div className="flex gap-4 items-center">
+                        <button onClick={handleRedirectLogin} className="px-4 py-2 text-blue-600 hover:text-blue-800 transition-colors duration-300">
+                            Iniciar Sesión
+                        </button>
+                        <button onClick={handleRedirectRegister} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
+                            Registrarse
+                        </button>
+                    </div>
+                )}
+                
             </div>
             </div>
         </nav>

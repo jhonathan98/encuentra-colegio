@@ -114,9 +114,32 @@ const Login = () => {
     }
   }
 
-  const handleLoginSupabase = async () => {
-    const { data: todos } = await supabase.from('users').select()
-    console.log(todos)
+  const handleLoginSupabase = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try{
+      const {data,error} = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password
+      })
+      console.log("data:->",data)
+      console.log("error:->",error)
+    }catch(e){
+      console.error("errores:->",e)
+    }
+  }
+
+  const handleRegisterSupabase = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try{
+      const {data,error} = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password
+      })
+      console.log("data:->",data)
+      console.log("error:->",error)
+    }catch(e){
+      console.error("errores:->",e)
+    }
   }
 
 
@@ -173,6 +196,9 @@ const Login = () => {
             </div>
             <AuthButton type="submit" isLoading={isLoading} onClick={handleLoginSupabase}>
               Iniciar Sesión
+            </AuthButton>
+            <AuthButton type="submit" isLoading={isLoading} onClick={handleRegisterSupabase}>
+              Registrarse
             </AuthButton>
             <button formAction={login}>Log in</button>
             <button formAction={signup}>Sign up</button>
