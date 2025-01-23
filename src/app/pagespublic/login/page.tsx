@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { supabase } from '@/app/lib/supabaseClient';
+//import { supabase } from '@/app/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import NavbarColegioCercano from '@/app/componentes/navbar';
@@ -8,6 +8,8 @@ import { AuthButton } from '@/app/auth/AuthButton'
 import { AuthInput } from '@/app/auth/AuthInput';
 import { SocialButton } from '@/app/auth/SocialButton';
 import { AuthError } from '@supabase/supabase-js'
+import { login, signup } from './actions'
+import { supabase } from '@/utils/supabase';
 
 interface FormData {
   email: string;
@@ -112,6 +114,11 @@ const Login = () => {
     }
   }
 
+  const handleLoginSupabase = async () => {
+    const { data: todos } = await supabase.from('users').select()
+    console.log(todos)
+  }
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-yellow-50">
@@ -136,7 +143,7 @@ const Login = () => {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form /*onSubmit={handleLogin}*/ className="space-y-6">
             <AuthInput
               label="Email"
               name="email"
@@ -164,10 +171,14 @@ const Login = () => {
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
-
-            <AuthButton type="submit" isLoading={isLoading}>
+            <AuthButton type="submit" isLoading={isLoading} onClick={handleLoginSupabase}>
               Iniciar Sesión
             </AuthButton>
+            <button formAction={login}>Log in</button>
+            <button formAction={signup}>Sign up</button>
+            {/* <AuthButton type="submit" isLoading={isLoading}>
+              Iniciar Sesión
+            </AuthButton> */}
           </form>
 
           <div className="relative my-6">            
