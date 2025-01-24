@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { useState } from 'react';
-import { supabase } from '@/app/lib/supabaseClient';
+import { supabase } from '@/utils/supabase';
 import { useRouter } from 'next/navigation';
 
 const ForgotPassword: React.FC = () => {

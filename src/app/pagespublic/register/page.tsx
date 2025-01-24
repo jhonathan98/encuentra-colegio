@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '@/utils/supabase';
 import { useRouter } from 'next/navigation';
 import NavbarColegioCercano from '@/app/componentes/navbar';
 

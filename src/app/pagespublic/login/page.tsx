@@ -68,33 +68,6 @@ const Login = () => {
    
   }
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!validateForm()) return
-
-    setIsLoading(true)
-    try {
-      const { error:supabaseError, data } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      })
-
-      if (supabaseError) throw supabaseError
-
-      router.push('/pages/home')
-      router.refresh()
-    } catch (errorExeption) {
-      const error = errorExeption as AuthError
-      setErrors(prev => ({
-        ...prev,
-        general: error?.message 
-      }))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   const handleGoogleLogin = async () => {
     try {
       const { error, data } = await supabase.auth.signInWithOAuth({
@@ -166,7 +139,7 @@ const Login = () => {
             </div>
           )}
 
-          <form /*onSubmit={handleLogin}*/ className="space-y-6">
+          <form className="space-y-6">
             <AuthInput
               label="Email"
               name="email"
