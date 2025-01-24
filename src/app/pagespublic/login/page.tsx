@@ -8,7 +8,7 @@ import { AuthButton } from '@/app/auth/AuthButton'
 import { AuthInput } from '@/app/auth/AuthInput';
 import { SocialButton } from '@/app/auth/SocialButton';
 import { AuthError } from '@supabase/supabase-js'
-import { login, signup } from './actions'
+
 import { supabase } from '@/utils/supabase';
 
 interface FormData {
@@ -200,8 +200,7 @@ const Login = () => {
             <AuthButton type="submit" isLoading={isLoading} onClick={handleRegisterSupabase}>
               Registrarse
             </AuthButton>
-            <button formAction={login}>Log in</button>
-            <button formAction={signup}>Sign up</button>
+            
             {/* <AuthButton type="submit" isLoading={isLoading}>
               Iniciar Sesión
             </AuthButton> */}

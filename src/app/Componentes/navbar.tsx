@@ -23,18 +23,41 @@ const NavbarColegioCercano = () => {
         async function sessionNow() {
             const { data, error } = await supabase.auth.getSession()
             if (error) {
-                console.error(error)
-                setuserLoged(false)
+                
+                setuserLoged(false)                
                 router.push('/pagespublic/login')
+                return
             }
-            if(data){
-                setuserLoged(true)
-                console.log(data)
+            if(!data.session){                
+                setuserLoged(false) 
+                router.push('/pagespublic/login')                               
+                return
             }
+            setuserLoged(true)            
         }
-        sessionNow();
-
+        sessionNow();        
     }, [])
+
+    const handleCloseSesion = () => {
+        async function closeSesion() {
+            
+            const session = await supabase.auth.getSession();
+
+            if(session){
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                    console.log("no pudo cerrar sesion",error,error.message)
+                    return
+                }
+                router.push('/pagespublic/login')
+            }else{
+                console.log("no hay sesion para cerrar")
+            }
+            
+        } 
+        closeSesion();
+        
+    }
 
 
     return (
@@ -51,11 +74,10 @@ const NavbarColegioCercano = () => {
                 </button>
                 {
                 userLoged ? (
-                    <div className="flex gap-4 items-center">
-                        <button onClick={handleRedirectLogin} className="px-4 py-2 text-blue-600 hover:text-blue-800 transition-colors duration-300">
-                            Cerrar sesion
-                        </button>                        
-                    </div>
+                    
+                    <button onClick={handleCloseSesion} className="px-4 py-2 text-blue-600 hover:text-blue-800 transition-colors duration-300">
+                        Cerrar Sesión
+                    </button>
                 ):(
                     <div className="flex gap-4 items-center">
                         <button onClick={handleRedirectLogin} className="px-4 py-2 text-blue-600 hover:text-blue-800 transition-colors duration-300">
