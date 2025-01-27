@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
-import NavbarColegioCercano from '../../componentes/navbar';
-import FooterColegioCercano from '../../componentes/footer';
+import NavbarColegioCercano from '@/app/componentes/navbar';
+import FooterColegioCercano from '@/app/componentes/footer';
 import { SchoolIcon } from 'lucide-react';
 import {
   APIProvider,
@@ -82,6 +82,25 @@ const Page = () => {
   const apikey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
   const centerMap = { lat: 7.6693005, lng: -76.6847988 };
   
+  const MapContent = () => {
+    const map = useMap();
+    const [selectedLocation, setSelectedLocation] = useState({lat: 7.6693005, lng: -76.6847988});
+  
+    useEffect(() => {
+      if (map) {
+        // Agregar el listener de click directamente al objeto map
+        map.addListener('click', (e:any) => {
+          const lat = e.latLng.lat();
+          const lng = e.latLng.lng();
+          setSelectedLocation({ lat, lng });
+          alert(`Latitud: ${lat}\nLongitud: ${lng}`);
+        });
+      }
+    }, [map]);
+  
+    return selectedLocation && <AdvancedMarker position={selectedLocation} />
+  }
+  
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-yellow-50">
       {/* Navbar con efecto de cristal */}
@@ -102,10 +121,12 @@ const Page = () => {
               mapId={process.env.NEXT_PUBLIC_MAP_ID}
               fullscreenControl={false}
               gestureHandling={'auto'}
-              disableDefaultUI={false}
+              disableDefaultUI={false}              
+              //onClick={handleAggMarker}              
             >
               
               <Direccions/>
+              <MapContent />
               {
                 Colegios.map((colegio, index) => (
                   <AdvancedMarker key={index} position={colegio.position}>
