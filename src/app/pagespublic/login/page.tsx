@@ -90,14 +90,29 @@ const Login = () => {
   const handleLoginSupabase = async (e: React.FormEvent) => {
     e.preventDefault();
     try{
+      if(validateForm() === false) return;
       const {data,error} = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password
       })
-      console.log("data:->",data)
-      console.log("error:->",error)
-    }catch(e){
-      console.error("errores:->",e)
+      if(error){
+        setErrors(prev => ({
+          ...prev,
+          general: error.message
+        }))
+        return;
+      }
+      if(data){
+        router.push('/pages/home');
+      }
+      //console.log("data:->",data)
+      //console.log("error:->",error)
+    }catch(e : any){
+      setErrors(prev => ({
+        ...prev,
+        general: e.message
+      }))
+      //console.error("errores:->",e)
     }
   }
 

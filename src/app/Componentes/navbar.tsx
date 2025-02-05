@@ -1,10 +1,11 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/utils/supabase';
 import { useEffect, useState } from 'react';
 
 const NavbarColegioCercano = () => {
     const router = useRouter();
+    const pathname = usePathname();
     const [userLoged, setuserLoged] = useState(false);
 
     const handleRedirectHome = () => {
@@ -20,19 +21,23 @@ const NavbarColegioCercano = () => {
     useEffect(() => {
         async function sessionNow() {
             const { data, error } = await supabase.auth.getSession();
-            console.log(data, error);
+            //onsole.log(data, error,!data.session,pathname != '/');
             if (error) {
                 setuserLoged(false);
                 router.push('/pagespublic/login');
                 return;
             }
-            const usuario = supabase.auth.getUser();
-            if (!data.session) {
+            //const usuario = supabase.auth.getUser();
+            if (!data.session && pathname != '/') {
                 setuserLoged(false);
                 router.push('/pagespublic/login');
                 return;
             }
-            setuserLoged(true);
+            if(data.session){
+                setuserLoged(true);
+                return;
+            }
+            //setuserLoged(true);
         }
         sessionNow();
     }, []);
@@ -44,11 +49,14 @@ const NavbarColegioCercano = () => {
             if (session) {
                 const { error } = await supabase.auth.signOut();
                 if (error) {
+                    setuserLoged(false);
                     console.log('no pudo cerrar sesion', error, error.message);
                     return;
                 }
+                setuserLoged(true);
                 router.push('/pagespublic/login');
             } else {
+                setuserLoged(false);
                 console.log('no hay sesion para cerrar');
             }
         }

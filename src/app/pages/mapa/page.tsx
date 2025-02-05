@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import NavbarColegioCercano from '@/app/componentes/navbar';
 import FooterColegioCercano from '@/app/componentes/footer';
 import { SchoolIcon } from 'lucide-react';
@@ -77,14 +77,18 @@ function Direccions() {
 
 }
 
+
+
 const Page = () => {
 
   const apikey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
   const centerMap = { lat: 7.6693005, lng: -76.6847988 };
-  
+  const [address, setAddress] = useState<string>('');
+  const [markerSearch, setMarkerSearch] = useState<{lat:number,lng:number} | null>(null);
+
   const MapContent = () => {
     const map = useMap();
-    const [selectedLocation, setSelectedLocation] = useState({lat: 7.6693005, lng: -76.6847988});
+    const [selectedLocation, setSelectedLocation] = useState<{lat:number,lng:number} | null >(null);
   
     useEffect(() => {
       if (map) {
@@ -93,12 +97,46 @@ const Page = () => {
           const lat = e.latLng.lat();
           const lng = e.latLng.lng();
           setSelectedLocation({ lat, lng });
+          //setMarkerSearch({ lat, lng });
           alert(`Latitud: ${lat}\nLongitud: ${lng}`);
-        });
+        });        
       }
     }, [map]);
   
-    return selectedLocation && <AdvancedMarker position={selectedLocation} />
+    return selectedLocation && <AdvancedMarker position={selectedLocation} />;
+  }
+
+  function Geocoding(){
+    const geocodingApiLoaded = useMapsLibrary('geocoding');
+    const [geocodingService, setGeocodingService] = useState<google.maps.Geocoder | null>(null);
+    const [gecodingResults, setGeocodingResults] = useState<google.maps.GeocoderResult>();
+    
+    useEffect(() => {
+      if(!geocodingApiLoaded) return;
+      setGeocodingService(new geocodingApiLoaded.Geocoder());
+    },[geocodingApiLoaded]);
+  
+    useEffect(() => {
+      if(!geocodingService || !address) return;
+  
+      geocodingService.geocode({ address }, (results, status) => {
+        if(results && status === google.maps.GeocoderStatus.OK){
+          setGeocodingResults(results[0]);
+          //setMarkerSearch({ lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng() });
+          console.log(results[0]);
+        }
+      });
+    }, [geocodingService,address]);
+  
+    if(!geocodingService) return <div>Loading...</div>
+    if(!gecodingResults) return <div>No hay resultados...</div>
+  
+    return <div>
+      <h2>{gecodingResults.formatted_address}</h2>
+      <p>Latitud: {gecodingResults.geometry.location.lat()}</p>
+      <p>Latitud: {gecodingResults.geometry.location.lng()}</p>
+      
+    </div>
   }
   
   return (
@@ -114,7 +152,11 @@ const Page = () => {
       {/* Seccion de mapa */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <div style={{height:"83vh", width:"98%"}} className="relative overflow-hidden">
-          <APIProvider apiKey={apikey} version='weekly'>
+
+          {/* Select para elegir la dirección */}
+          <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
+           <APIProvider apiKey={apikey} version='weekly' >
+            <Geocoding />
             <Map            
               defaultCenter={centerMap}
               defaultZoom={15}
@@ -125,8 +167,11 @@ const Page = () => {
               //onClick={handleAggMarker}              
             >
               
-              <Direccions/>
+              {/* <Direccions/> */}
               <MapContent />
+              {
+                markerSearch &&  <AdvancedMarker key={'buscado'} position={markerSearch} />                
+              }
               {
                 Colegios.map((colegio, index) => (
                   <AdvancedMarker key={index} position={colegio.position}>
@@ -135,7 +180,7 @@ const Page = () => {
                 ) )
               }              
             </Map>
-          </APIProvider>
+          </APIProvider>         
         </div>
       </section>
 
